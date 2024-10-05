@@ -155,7 +155,7 @@ plt.hist(numbers_300, bins=15)
 plt.title("Заданное распределение")
 plt.xlabel("Значение")
 plt.ylabel("Частота")
-plt.savefig("lab1/2.png")
+# plt.savefig("lab1/2.png")
 
 # TODO сделать две гистограммы для в 3.png, показав numbers_300 и erlang_300
 
@@ -167,7 +167,7 @@ plt.hist(erlang_300, bins=15)
 plt.title("Распределение Эрланга 2 порядка")
 plt.xlabel("Значение")
 plt.ylabel("Частота")
-plt.savefig("lab1/3.png")
+# plt.savefig("lab1/3.png")
 
 # Генерируем последовательность случайных чисел с распределением Эрланга
 erlang_200 = np.random.gamma(shape=shape_param, scale=scale_param, size=200).tolist()
