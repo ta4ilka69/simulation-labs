@@ -1,3 +1,6 @@
+import matplotlib.pyplot as plt
+import numpy as np
+
 numbers_300, numbers_10, numbers_20, numbers_50, numbers_100, numbers_200 = (
     [],
     [],
@@ -94,8 +97,10 @@ for i in range(5):
     variation.append(msd[i] / m[i])
     variation_div.append(abs((variation_best - variation[i]) / variation_best * 100))
 
+
 def round3(n):
     return round(n, 3)
+
 
 m = list(map(round3, m))
 d = list(map(round3, d))
@@ -133,6 +138,128 @@ for i, N in enumerate([10, 20, 50, 100, 200]):
     print("difference variation =", variation_div[i])
 
 
-#TODO проверить формулу для к-та вариации с https://ru.wikipedia.org/wiki/Коэффициент_вариации
-#TODO https://studfile.net/preview/9173159/page:24/ Если НЕ верно, то прикинуть, какой закон распределения подходит
-#TODO сейчас - Логарифмически-нормальное 0.35-0.80 ;  у нас 0.4-0.7
+# TODO проверить формулу для к-та вариации с https://ru.wikipedia.org/wiki/Коэффициент_вариации
+# коэф. вариации норм. эрланга k-го порядка равен 1 / sqrt(k), а 1/sqrt(2) = 0.7071067811865476 почти 0.689 как у нас
+
+# График 1
+# Распределение случайных величин (y - числа, x - номер числа)
+
+plt.plot(numbers_300)
+plt.savefig("lab1/1.png")
+
+
+# График 2
+# Гистограмма распределения случайных величин
+plt.clf()
+plt.hist(numbers_300, bins=15)
+plt.title("Заданное распределение")
+plt.xlabel("Значение")
+plt.ylabel("Частота")
+plt.savefig("lab1/2.png")
+
+# TODO сделать две гистограммы для в 3.png, показав numbers_300 и erlang_300
+
+# График 3 - Гистограмма для 300 случайных чисел с распределением Эрланга
+shape_param = 2  # Параметр k для Эрланга
+scale_param = d_best / m_best  # Параметр λ для Эрланга
+erlang_300 = np.random.gamma(shape=shape_param, scale=scale_param, size=300).tolist()
+plt.hist(erlang_300, bins=15)
+plt.title("Распределение Эрланга 2 порядка")
+plt.xlabel("Значение")
+plt.ylabel("Частота")
+plt.savefig("lab1/3.png")
+
+# Генерируем последовательность случайных чисел с распределением Эрланга
+erlang_200 = np.random.gamma(shape=shape_param, scale=scale_param, size=200).tolist()
+erlang_100 = np.random.gamma(shape=shape_param, scale=scale_param, size=100).tolist()
+erlang_50 = np.random.gamma(shape=shape_param, scale=scale_param, size=50).tolist()
+erlang_20 = np.random.gamma(shape=shape_param, scale=scale_param, size=20).tolist()
+erlang_10 = np.random.gamma(shape=shape_param, scale=scale_param, size=10).tolist()
+m_300 = sum(erlang_300) / len(erlang_300)
+d_300 = (sum([x**2 for x in erlang_300]) / 300 - m_300**2) * (300 / 299)
+msd_300 = d_300**0.5
+sigma_m_300 = (d_300 / 300) ** 0.5
+e_p1_300 = t_p[0] * sigma_m_300
+e_p2_300 = t_p[1] * sigma_m_300
+e_p3_300 = t_p[2] * sigma_m_300
+variation_300 = msd_300 / m_300
+print()
+print("-" * 20)
+print("erlang 300")
+print("m =", round(m_300, 3))
+print("d =", round(d_300, 3))
+print("msd =", round(msd_300, 3))
+print("sigma_m =", round(sigma_m_300, 3))
+print("e_p1 =", round(e_p1_300, 3))
+print("e_p2 =", round(e_p2_300, 3))
+print("e_p3 =", round(e_p3_300, 3))
+print("variation =", round(variation_300, 3))
+
+new_smalls = [erlang_10, erlang_20, erlang_50, erlang_100, erlang_200]
+m_new = []
+d_new = []
+msd_new = []
+sigma_m_new = []
+e_p1_new = []
+e_p2_new = []
+e_p3_new = []
+variation_new = []
+m_div_new = []
+d_div_new = []
+msd_div_new = []
+e_p1_div_new = []
+e_p2_div_new = []
+e_p3_div_new = []
+variation_div_new = []
+
+for i in range(5):
+    m_new.append(sum(new_smalls[i]) / len(new_smalls[i]))
+    d_new.append(
+        (sum([x**2 for x in new_smalls[i]]) / len(new_smalls[i]) - m_new[i] ** 2)
+        * (len(new_smalls[i]) / (len(new_smalls[i]) - 1))
+    )
+    msd_new.append(d_new[i] ** 0.5)
+    sigma_m_new.append((d_new[i] / len(new_smalls[i])) ** 0.5)
+    e_p1_new.append(t_p[0] * sigma_m_new[i])
+    e_p2_new.append(t_p[1] * sigma_m_new[i])
+    e_p3_new.append(t_p[2] * sigma_m_new[i])
+    m_div_new.append(abs((m[i] - m_new[i]) / m[i] * 100))
+    d_div_new.append(abs((d[i] - d_new[i]) / d[i] * 100))
+    msd_div_new.append(abs((msd[i] - msd_new[i]) / msd[i] * 100))
+    e_p1_div_new.append(abs((e_p1[i] - e_p1_new[i]) / e_p1[i] * 100))
+    e_p2_div_new.append(abs((e_p2[i] - e_p2_new[i]) / e_p2[i] * 100))
+    e_p3_div_new.append(abs((e_p3[i] - e_p3_new[i]) / e_p3[i] * 100))
+    variation_new.append(msd_new[i] / m_new[i])
+    variation_div_new.append(
+        abs((variation[i] - variation_new[i]) / variation[i] * 100)
+    )
+
+m_new = list(map(round3, m_new))
+d_new = list(map(round3, d_new))
+msd_new = list(map(round3, msd_new))
+sigma_m_new = list(map(round3, sigma_m_new))
+e_p1_new = list(map(round3, e_p1_new))
+e_p2_new = list(map(round3, e_p2_new))
+e_p3_new = list(map(round3, e_p3_new))
+m_div_new = list(map(round3, m_div_new))
+d_div_new = list(map(round3, d_div_new))
+msd_div_new = list(map(round3, msd_div_new))
+e_p1_div_new = list(map(round3, e_p1_div_new))
+e_p2_div_new = list(map(round3, e_p2_div_new))
+e_p3_div_new = list(map(round3, e_p3_div_new))
+variation_new = list(map(round3, variation_new))
+variation_div_new = list(map(round3, variation_div_new))
+print("M: ", m_new)
+print("D: ", d_new)
+print("MSD: ", msd_new)
+print("E_p1: ", e_p1_new)
+print("E_p2: ", e_p2_new)
+print("E_p3: ", e_p3_new)
+print("M div: ", m_div_new)
+print("D div: ", d_div_new)
+print("MSD div: ", msd_div_new)
+print("E_p1 div: ", e_p1_div_new)
+print("E_p2 div: ", e_p2_div_new)
+print("E_p3 div: ", e_p3_div_new)
+print("Variation: ", variation_new)
+print("Variation div: ", variation_div_new)
