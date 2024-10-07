@@ -140,21 +140,21 @@ for i, N in enumerate([10, 20, 50, 100, 200]):
 # График 1
 # Распределение случайных величин (y - числа, x - номер числа)
 
-plt.gca().set_facecolor('lightgray')
+plt.gca().set_facecolor("lightgray")
 plt.plot(numbers_300, color="red")
 plt.xlabel("Значение")
 plt.ylabel("Частота")
-plt.grid(True, linewidth=0.5, color='white')
+plt.grid(True, linewidth=0.5, color="white")
 plt.savefig("lab1/1.png")
 
 # График 2
 # Гистограмма распределения случайных величин
 plt.clf()
-plt.gca().set_facecolor('lightgray')
-plt.hist(numbers_300, bins=15, color="red", edgecolor='black', linewidth=1, zorder=2)
+plt.gca().set_facecolor("lightgray")
+plt.hist(numbers_300, bins=15, color="red", edgecolor="black", linewidth=1, zorder=2)
 plt.xlabel("Значение")
 plt.ylabel("Частота")
-plt.grid(True, linewidth=0.5, color='white', zorder=0)
+plt.grid(True, linewidth=0.5, color="white", zorder=0)
 plt.savefig("lab1/2.png")
 
 # TODO сделать две гистограммы для в 3.png, показав numbers_300 и erlang_300
@@ -164,10 +164,26 @@ shape_param = 2  # Параметр k для Эрланга
 scale_param = d_best / m_best  # Параметр λ для Эрланга
 erlang_300 = np.random.gamma(shape=shape_param, scale=scale_param, size=300).tolist()
 plt.clf()
-plt.gca().set_facecolor('lightgray')
-plt.hist(numbers_300, density=True, color='blue', alpha=0.5, label='numbers_300')
-plt.hist(erlang_300, density=True, color='red', alpha=0.5, label='erlang_300')
-plt.grid(True, linewidth=0.5, color='white', zorder=0)
+plt.gca().set_facecolor("lightgray")
+plt.hist(
+    numbers_300,
+    color="blue",
+    label="numbers_300",
+    bins=15,
+    linewidth=1,
+    zorder=2,
+    alpha=0.5,
+)
+plt.hist(
+    erlang_300,
+    color="red",
+    alpha=0.5,
+    label="erlang_300",
+    bins=15,
+    linewidth=1,
+    zorder=2,
+)
+plt.grid(True, linewidth=0.5, color="white", zorder=0)
 plt.xlabel("Значение")
 plt.ylabel("Частота")
 plt.legend()
