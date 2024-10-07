@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy import stats
 
 numbers_300, numbers_10, numbers_20, numbers_50, numbers_100, numbers_200 = (
     [],
@@ -145,7 +146,7 @@ plt.plot(numbers_300, color="red")
 plt.xlabel("Значение")
 plt.ylabel("Частота")
 plt.grid(True, linewidth=0.5, color="white")
-# plt.savefig("lab1/1.png")
+plt.savefig("lab1/1.png")
 
 # График 2
 # Гистограмма распределения случайных величин
@@ -155,7 +156,7 @@ plt.hist(numbers_300, bins=15, color="red", edgecolor="black", linewidth=1, zord
 plt.xlabel("Значение")
 plt.ylabel("Частота")
 plt.grid(True, linewidth=0.5, color="white", zorder=0)
-# plt.savefig("lab1/2.png")
+plt.savefig("lab1/2.png")
 
 # График 3 - Гистограмма для 300 случайных чисел с распределением Эрланга и 300 чисел из заданного ЧП
 shape_param = 2  # Параметр k для Эрланга
@@ -185,7 +186,7 @@ plt.grid(True, linewidth=0.5, color="white", zorder=0)
 plt.xlabel("Значение")
 plt.ylabel("Частота")
 plt.legend()
-# plt.savefig("lab1/3.png")
+plt.savefig("lab1/3.png")
 
 # Генерируем последовательность случайных чисел с распределением Эрланга
 erlang_200 = np.random.gamma(shape=shape_param, scale=scale_param, size=200).tolist()
@@ -288,32 +289,63 @@ lags = range(1, 11)
 n = len(numbers_300)
 numbers_autocorrs = []
 for lag in range(1, 11):
-    numerator = np.sum((numbers_300[:-lag] - np.mean(numbers_300[:-lag])) * (numbers_300[lag:] - np.mean(numbers_300[lag:])))
-    denominator = np.sum((numbers_300[:-lag] - np.mean(numbers_300[:-lag]))**2)
+    numerator = np.sum(
+        (numbers_300[:-lag] - np.mean(numbers_300[:-lag]))
+        * (numbers_300[lag:] - np.mean(numbers_300[lag:]))
+    )
+    denominator = np.sum((numbers_300[:-lag] - np.mean(numbers_300[:-lag])) ** 2)
     autocorr = numerator / denominator
     numbers_autocorrs.append(autocorr)
 print("\nAutocorrs number_300: ", list(float(i) for i in numbers_autocorrs))
 plt.clf()
 plt.gca().set_facecolor("lightgray")
-plt.plot(lags, numbers_autocorrs, marker='o', color="red")
-plt.xlabel('Сдвиг')
-plt.ylabel('Коэффициент автокорреляции')
+plt.plot(lags, numbers_autocorrs, "r-", marker="o")
+plt.xlabel("Сдвиг")
+plt.ylabel("Коэффициент автокорреляции")
 plt.grid(True, linewidth=0.5, color="white")
 plt.savefig("lab1/4.png")
 
+
+# Рассчёт коэффициентов автокорреляции для erlang_300. Вывод графика
 erlang_autocorrs = []
 for lag in range(1, 11):
-    numerator = np.sum((erlang_300[:-lag] - np.mean(erlang_300[:-lag])) * (erlang_300[lag:] - np.mean(erlang_300[lag:])))
-    denominator = np.sum((erlang_300[:-lag] - np.mean(erlang_300[:-lag]))**2)
+    numerator = np.sum(
+        (erlang_300[:-lag] - np.mean(erlang_300[:-lag]))
+        * (erlang_300[lag:] - np.mean(erlang_300[lag:]))
+    )
+    denominator = np.sum((erlang_300[:-lag] - np.mean(erlang_300[:-lag])) ** 2)
     autocorr = numerator / denominator
     erlang_autocorrs.append(autocorr)
 print("Autocorrs erlang_300: ", list(float(i) for i in erlang_autocorrs))
 plt.clf()
 plt.gca().set_facecolor("lightgray")
-plt.plot(lags, erlang_autocorrs, marker='o', color="red")
-plt.xlabel('Сдвиг')
-plt.ylabel('Коэффициент автокорреляции')
+plt.plot(lags, erlang_autocorrs, "r-", marker="o")
+plt.xlabel("Сдвиг")
+plt.ylabel("Коэффициент автокорреляции")
 plt.grid(True, linewidth=0.5, color="white")
 plt.savefig("lab1/5.png")
 
-
+# сравнение плотности распределения аппроксимирующего закона с гистограммой распределения частот для исходной ЧП
+plt.clf()
+plt.gca().set_facecolor("lightgray")
+plt.hist(
+    numbers_300,
+    bins=15,
+    density=True,
+    color="red",
+    edgecolor="black",
+    linewidth=1,
+    zorder=2,
+    label="Исходные данные",
+)
+plt.xlabel("Значение")
+plt.ylabel("Плотность распределения")
+plt.grid(True, linewidth=0.5, color="white", zorder=0)
+exp_lambda = 1 / np.mean(numbers_300)
+x = np.linspace(0, max(numbers_300), 1000)
+exp_pdf = exp_lambda * np.exp(-exp_lambda * x)
+erlang_lambda = 2 / np.mean(numbers_300)
+erlang_pdf = stats.erlang.pdf(x, a=2, scale=1 / erlang_lambda)
+plt.plot(x, erlang_pdf, "b-", lw=2, label="Распределение Эрланга (k=2)")
+plt.legend()
+plt.savefig("lab1/6.png")
