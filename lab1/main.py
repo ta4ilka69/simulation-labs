@@ -144,30 +144,38 @@ for i, N in enumerate([10, 20, 50, 100, 200]):
 # График 1
 # Распределение случайных величин (y - числа, x - номер числа)
 
-plt.plot(numbers_300)
+plt.gca().set_facecolor('lightgray')
+plt.plot(numbers_300, color="red")
+plt.xlabel("Значение")
+plt.ylabel("Частота")
+plt.grid(True, linewidth=0.5, color='white')
 plt.savefig("lab1/1.png")
-
 
 # График 2
 # Гистограмма распределения случайных величин
 plt.clf()
-plt.hist(numbers_300, bins=15)
-plt.title("Заданное распределение")
+plt.gca().set_facecolor('lightgray')
+plt.hist(numbers_300, bins=15, color="red", edgecolor='black', linewidth=1, zorder=2)
 plt.xlabel("Значение")
 plt.ylabel("Частота")
-# plt.savefig("lab1/2.png")
+plt.grid(True, linewidth=0.5, color='white', zorder=0)
+plt.savefig("lab1/2.png")
 
 # TODO сделать две гистограммы для в 3.png, показав numbers_300 и erlang_300
 
-# График 3 - Гистограмма для 300 случайных чисел с распределением Эрланга
+# График 3 - Гистограмма для 300 случайных чисел с распределением Эрланга и 300 чисел из заданного ЧП
 shape_param = 2  # Параметр k для Эрланга
 scale_param = d_best / m_best  # Параметр λ для Эрланга
 erlang_300 = np.random.gamma(shape=shape_param, scale=scale_param, size=300).tolist()
-plt.hist(erlang_300, bins=15)
-plt.title("Распределение Эрланга 2 порядка")
+plt.clf()
+plt.gca().set_facecolor('lightgray')
+plt.hist(numbers_300, density=True, color='blue', alpha=0.5, label='numbers_300')
+plt.hist(erlang_300, density=True, color='red', alpha=0.5, label='erlang_300')
+plt.grid(True, linewidth=0.5, color='white', zorder=0)
 plt.xlabel("Значение")
 plt.ylabel("Частота")
-# plt.savefig("lab1/3.png")
+plt.legend()
+plt.savefig("lab1/3.png")
 
 # Генерируем последовательность случайных чисел с распределением Эрланга
 erlang_200 = np.random.gamma(shape=shape_param, scale=scale_param, size=200).tolist()
