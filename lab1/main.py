@@ -145,7 +145,7 @@ plt.plot(numbers_300, color="red")
 plt.xlabel("Значение")
 plt.ylabel("Частота")
 plt.grid(True, linewidth=0.5, color="white")
-plt.savefig("lab1/1.png")
+# plt.savefig("lab1/1.png")
 
 # График 2
 # Гистограмма распределения случайных величин
@@ -155,9 +155,7 @@ plt.hist(numbers_300, bins=15, color="red", edgecolor="black", linewidth=1, zord
 plt.xlabel("Значение")
 plt.ylabel("Частота")
 plt.grid(True, linewidth=0.5, color="white", zorder=0)
-plt.savefig("lab1/2.png")
-
-# TODO сделать две гистограммы для в 3.png, показав numbers_300 и erlang_300
+# plt.savefig("lab1/2.png")
 
 # График 3 - Гистограмма для 300 случайных чисел с распределением Эрланга и 300 чисел из заданного ЧП
 shape_param = 2  # Параметр k для Эрланга
@@ -187,7 +185,7 @@ plt.grid(True, linewidth=0.5, color="white", zorder=0)
 plt.xlabel("Значение")
 plt.ylabel("Частота")
 plt.legend()
-plt.savefig("lab1/3.png")
+# plt.savefig("lab1/3.png")
 
 # Генерируем последовательность случайных чисел с распределением Эрланга
 erlang_200 = np.random.gamma(shape=shape_param, scale=scale_param, size=200).tolist()
@@ -283,3 +281,39 @@ print("E_p2 div: ", e_p2_div_new)
 print("E_p3 div: ", e_p3_div_new)
 print("Variation: ", variation_new)
 print("Variation div: ", variation_div_new)
+
+
+# Рассчёт коэффициентов автокорреляции для numbers_300. Вывод графика
+lags = range(1, 11)
+n = len(numbers_300)
+numbers_autocorrs = []
+for lag in range(1, 11):
+    numerator = np.sum((numbers_300[:-lag] - np.mean(numbers_300[:-lag])) * (numbers_300[lag:] - np.mean(numbers_300[lag:])))
+    denominator = np.sum((numbers_300[:-lag] - np.mean(numbers_300[:-lag]))**2)
+    autocorr = numerator / denominator
+    numbers_autocorrs.append(autocorr)
+print("\nAutocorrs number_300: ", list(float(i) for i in numbers_autocorrs))
+plt.clf()
+plt.gca().set_facecolor("lightgray")
+plt.plot(lags, numbers_autocorrs, marker='o', color="red")
+plt.xlabel('Сдвиг')
+plt.ylabel('Коэффициент автокорреляции')
+plt.grid(True, linewidth=0.5, color="white")
+plt.savefig("lab1/4.png")
+
+erlang_autocorrs = []
+for lag in range(1, 11):
+    numerator = np.sum((erlang_300[:-lag] - np.mean(erlang_300[:-lag])) * (erlang_300[lag:] - np.mean(erlang_300[lag:])))
+    denominator = np.sum((erlang_300[:-lag] - np.mean(erlang_300[:-lag]))**2)
+    autocorr = numerator / denominator
+    erlang_autocorrs.append(autocorr)
+print("Autocorrs erlang_300: ", list(float(i) for i in erlang_autocorrs))
+plt.clf()
+plt.gca().set_facecolor("lightgray")
+plt.plot(lags, erlang_autocorrs, marker='o', color="red")
+plt.xlabel('Сдвиг')
+plt.ylabel('Коэффициент автокорреляции')
+plt.grid(True, linewidth=0.5, color="white")
+plt.savefig("lab1/5.png")
+
+
