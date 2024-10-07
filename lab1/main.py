@@ -137,10 +137,6 @@ for i, N in enumerate([10, 20, 50, 100, 200]):
     print("variation =", variation[i])
     print("difference variation =", variation_div[i])
 
-
-# TODO проверить формулу для к-та вариации с https://ru.wikipedia.org/wiki/Коэффициент_вариации
-# коэф. вариации норм. эрланга k-го порядка равен 1 / sqrt(k), а 1/sqrt(2) = 0.7071067811865476 почти 0.689 как у нас
-
 # График 1
 # Распределение случайных величин (y - числа, x - номер числа)
 
