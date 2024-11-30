@@ -162,6 +162,10 @@ plt.savefig("lab1/2.png")
 shape_param = 2  # Параметр k для Эрланга
 scale_param = d_best / m_best  # Параметр λ для Эрланга
 erlang_300 = np.random.gamma(shape=shape_param, scale=scale_param, size=300).tolist()
+erlang_300_to_file = open("./lab1/aprox.txt","w")
+for x in erlang_300:
+    erlang_300_to_file.write(str(x)+'\n')
+erlang_300_to_file.close()
 plt.clf()
 plt.gca().set_facecolor("lightgray")
 plt.hist(
